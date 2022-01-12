@@ -1,69 +1,91 @@
 #include "sort.h"
-
+int hoare(int *array, int left, int right, size_t size);
+void Qsort(int *array, int left, int right, size_t size);
+void swap(int *array, int *left, int *right, size_t size);
 /**
- * partition_h - array partition
- * @array: array to sort
- * @first: first position
- * @last: last position
- * @size: array size
- * Return: int pivot index
- */
-int partition_h(int *array, int first, int last, size_t size)
-{
-	int pivot = array[last], i = first - 1, j = last + 1, aux;
-
-	while (1)
-	{
-		do {
-			i++;
-		} while (array[i] < pivot);
-
-		do {
-			j--;
-		} while (array[j] > pivot);
-
-		if (j < i)
-			return (j);
-		if (array[i] > array[j])
-		{
-			aux = array[i];
-			array[i] = array[j];
-			array[j] = aux;
-			print_array(array, size);
-		}
-	}
-}
-
-/**
- * qsh - sorts an array of integers recursively
- * @array: array to sort
- * @first: first position
- * @last: last position
- * @size: array size
- */
-void qsh(int *array, int first, int last, size_t size)
-{
-	int pivot;
-
-	if (first < last)
-	{
-		pivot = partition_h(array, first, last, size);
-		qsh(array, first, pivot, size);
-		qsh(array, pivot + 1, last, size);
-	}
-}
-
-/**
- * quick_sort_hoare - sorts an array of integers using the Quick
- * sort hoare algorithm  in ascending order
- * @array: array to sort
- * @size: array size
+ * quick_sort_hoare - Sorts an array in ascending order
+ * @array: Array
+ * @size: Pointer to the previous element of the list
+ *
+ * Description: Sorts an array of integers in ascending
+ * order using the Quick sort hoare algorithm
+ * Return: Void
  */
 void quick_sort_hoare(int *array, size_t size)
 {
 	if (!array || size < 2)
 		return;
-
-	qsh(array, 0, size - 1, size);
+	Qsort(array, 0, size - 1, size);
 }
 
+/**
+ * Qsort - Recursion to quick sort
+ * @array: Array
+ * @left: Start point
+ * @right: End point
+ * @size: Pointer to the previous element of the list
+ *
+ * Description: New partitions
+ * Return: int Pivot
+ */
+void Qsort(int *array, int left, int right, size_t size)
+{
+	int pivot;
+
+	if (left < right)
+	{
+		pivot = hoare(array, left, right, size);
+		Qsort(array, left, pivot - 1, size);
+		Qsort(array, pivot, right, size);
+	}
+}
+
+/**
+ * hoare - Evaluates new array
+ * @array: Array
+ * @left: Start point
+ * @right: End point
+ * @size: Pointer to the previous element of the list
+ *
+ * Description: New partitions
+ * Return: int Pivot
+ */
+int hoare(int *array, int left, int right, size_t size)
+{
+	int pivot = array[right];
+	int i = left - 1, j = right + 1;
+
+	while (i < (int) size)
+	{
+		while (array[++i] < pivot)
+			;
+		while (array[--j] > pivot)
+			;
+		if (i >= j)
+			break;
+		swap(array, &array[i], &array[j], size);
+	}
+	return (i);
+}
+
+/**
+ * swap - Swaps two int values
+ * @array: the integer array to sort
+ * @left: address of first value
+ * @right: address of second value
+ * @size: the size of the array
+ *
+ * Return: Void
+ */
+void swap(int *array, int *left, int *right, size_t size)
+{
+	int temp;
+
+	if (left != right)
+	{
+		temp = *left;
+		*left = *right;
+		*right = temp;
+		print_array(array, size);
+	}
+}
